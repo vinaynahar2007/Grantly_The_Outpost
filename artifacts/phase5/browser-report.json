@@ -1,0 +1,85 @@
+{
+  "reports": [
+    {
+      "label": "desktop list",
+      "violations": []
+    },
+    {
+      "label": "desktop board",
+      "violations": []
+    },
+    {
+      "label": "desktop details",
+      "violations": []
+    },
+    {
+      "label": "desktop add",
+      "violations": []
+    },
+    {
+      "label": "desktop",
+      "workflows": "list, board, focus containment, notes/dates/documents refresh, add, duplicate prevention, status history, withdrawal, confirmed deletion, dashboard synchronization, prior routes: passed"
+    },
+    {
+      "label": "tablet list",
+      "violations": []
+    },
+    {
+      "label": "tablet board",
+      "violations": []
+    },
+    {
+      "label": "tablet details",
+      "violations": []
+    },
+    {
+      "label": "tablet add",
+      "violations": []
+    },
+    {
+      "label": "tablet",
+      "workflows": "list, board, focus containment, notes/dates/documents refresh, add, duplicate prevention, status history, withdrawal, confirmed deletion, dashboard synchronization, prior routes: passed"
+    },
+    {
+      "label": "mobile list",
+      "violations": []
+    },
+    {
+      "label": "mobile board",
+      "violations": []
+    },
+    {
+      "label": "mobile details",
+      "violations": []
+    },
+    {
+      "label": "mobile add",
+      "violations": []
+    },
+    {
+      "label": "mobile",
+      "workflows": "list, board, focus containment, notes/dates/documents refresh, add, duplicate prevention, status history, withdrawal, confirmed deletion, dashboard synchronization, prior routes: passed"
+    },
+    {
+      "label": "small-mobile list",
+      "violations": []
+    },
+    {
+      "label": "small-mobile board",
+      "violations": []
+    },
+    {
+      "label": "small-mobile details",
+      "violations": []
+    },
+    {
+      "label": "small-mobile add",
+      "violations": []
+    },
+    {
+      "label": "small-mobile",
+      "workflows": "list, board, focus containment, notes/dates/documents refresh, add, duplicate prevention, status history, withdrawal, confirmed deletion, dashboard synchronization, prior routes: passed"
+    }
+  ],
+  "errors": []
+}

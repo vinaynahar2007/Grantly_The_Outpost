@@ -1,0 +1,145 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand & Accent Colors */
+  --color-violet-950: #2e1065;
+  --color-violet-900: #4c1d95;
+  --color-violet-800: #5b21b6;
+  --color-violet-700: #6d28d9;
+  --color-violet-600: #7c3aed;
+  --color-violet-500: #8b5cf6;
+  --color-violet-200: #ddd6fe;
+  --color-violet-100: #ede9fe;
+  --color-violet-50: #f5f3ff;
+
+  /* Deep Navy Typography & Ink */
+  --color-navy-950: #090d16;
+  --color-navy-900: #0f172a;
+  --color-navy-800: #1e293b;
+  --color-navy-700: #334155;
+  --color-navy-600: #475569;
+  --color-navy-500: #64748b;
+  --color-navy-400: #94a3b8;
+
+  /* Off-White Canvas & Surfaces */
+  --color-canvas: #f8f9fc;
+  --color-surface: #ffffff;
+  --color-surface-subtle: #f1f4f9;
+
+  /* Emerald Success & Funding Indicators */
+  --color-emerald-700: #047857;
+  --color-emerald-600: #059669;
+  --color-emerald-500: #10b981;
+  --color-emerald-200: #a7f3d0;
+  --color-emerald-100: #d1fae5;
+  --color-emerald-50: #ecfdf5;
+
+  /* Subtle Hairline Borders */
+  --color-border: #e2e8f0;
+  --color-border-subtle: #eef2f6;
+
+  /* Typography */
+  --font-display: "Plus Jakarta Sans", "Inter", system-ui, -apple-system, sans-serif;
+  --font-sans: "Inter", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+
+  /* Radii */
+  --radius-card: 1rem;
+  --radius-control: 0.625rem;
+  --radius-pill: 9999px;
+
+  /* Shadows */
+  --shadow-card: 0 1px 2px 0 rgb(15 23 42 / 0.04), 0 1px 3px 0 rgb(15 23 42 / 0.03);
+  --shadow-card-hover: 0 8px 24px -4px rgb(15 23 42 / 0.07), 0 2px 6px -1px rgb(15 23 42 / 0.04);
+  --shadow-drawer: 0 20px 40px -12px rgb(15 23 42 / 0.16);
+}
+
+:root {
+  --grantly-bg: #f8f9fc;
+  --grantly-surface: #ffffff;
+  --grantly-surface-subtle: #f1f4f9;
+  --grantly-ink-primary: #0f172a;
+  --grantly-ink-secondary: #334155;
+  --grantly-ink-muted: #64748b;
+  --grantly-accent: #6d28d9;
+  --grantly-accent-hover: #5b21b6;
+  --grantly-accent-soft: #f5f3ff;
+  --grantly-success: #059669;
+  --grantly-success-soft: #ecfdf5;
+  --grantly-border: #e2e8f0;
+  --grantly-border-subtle: #eef2f6;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    background-color: var(--grantly-bg);
+    color: var(--grantly-ink-primary);
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.02em;
+  }
+
+  *:focus-visible {
+    outline: 2px solid #7c3aed;
+    outline-offset: 2px;
+  }
+}
+
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Scrollbars drawn in GRANTLY's own violet-on-canvas language */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #a78bfa #eef2f6;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #eef2f6;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #c4b5fd 0%, #a78bfa 100%);
+  border: 2px solid #f8f9fc;
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #8b5cf6 0%, #6d28d9 100%);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Honour reduced-motion preferences across the matcher's transitions */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
