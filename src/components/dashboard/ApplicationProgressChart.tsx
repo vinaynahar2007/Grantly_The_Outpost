@@ -1,14 +1,5 @@
 import { Link } from "react-router-dom";
 import { FolderKanban, ArrowUpRight } from "lucide-react";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  Cell,
-} from "recharts";
 import type { ApplicationStageSummary } from "@/types";
 import { Card, Button, Badge } from "@/components/ui";
 import { DashboardEmptyState } from "./DashboardEmptyState";
@@ -22,6 +13,8 @@ export function ApplicationProgressChart({
   stages,
   totalApplications,
 }: ApplicationProgressChartProps) {
+  const maxCount = Math.max(1, ...stages.map((stage) => stage.count));
+
   return (
     <Card className="p-5 sm:p-6" aria-labelledby="application-progress-heading">
       <div className="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
@@ -72,55 +65,26 @@ export function ApplicationProgressChart({
         </div>
       ) : (
         <div className="mt-5 grid gap-6 lg:grid-cols-12 lg:items-center">
-          {/* Recharts Horizontal Stage Visualization */}
           <div
-            className="h-[300px] min-w-0 w-full lg:col-span-7"
+            className="flex min-h-[300px] min-w-0 flex-col justify-center gap-3 lg:col-span-7"
             aria-hidden="true"
           >
-            <ResponsiveContainer width="100%" height={300} minWidth={0}>
-              <BarChart
-                data={stages}
-                layout="vertical"
-                margin={{ top: 4, right: 20, bottom: 4, left: 8 }}
-                barCategoryGap={12}
-              >
-                <XAxis
-                  type="number"
-                  allowDecimals={false}
-                  tick={{ fill: "#64748B", fontSize: 11 }}
-                  axisLine={{ stroke: "#E2E8F0" }}
-                  tickLine={false}
-                />
-                <YAxis
-                  type="category"
-                  dataKey="status"
-                  width={96}
-                  tick={{ fill: "#0F172A", fontSize: 12, fontWeight: 500 }}
-                  axisLine={false}
-                  tickLine={false}
-                />
-                <Tooltip
-                  cursor={{ fill: "#F8F9FC" }}
-                  contentStyle={{
-                    backgroundColor: "#FFFFFF",
-                    borderColor: "#E2E8F0",
-                    borderRadius: "12px",
-                    fontSize: "12px",
-                    color: "#0F172A",
-                    boxShadow: "0 8px 20px -4px rgb(15 23 42 / 0.08)",
-                  }}
-                  formatter={(value) => [
-                    `${value ?? 0} application(s)`,
-                    "Count",
-                  ]}
-                />
-                <Bar dataKey="count" radius={[0, 8, 8, 0]} maxBarSize={24}>
-                  {stages.map((entry) => (
-                    <Cell key={entry.status} fill={entry.color} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
+            {stages.map((stage) => (
+              <div key={stage.status} className="flex items-center gap-3">
+                <span className="w-24 shrink-0 truncate text-right text-[11px] text-[#64748B]">
+                  {stage.status}
+                </span>
+                <span className="h-5 min-w-0 flex-1 overflow-hidden rounded-md bg-[#F1F4F9]">
+                  <span
+                    className="block h-full rounded-md"
+                    style={{
+                      width: `${(stage.count / maxCount) * 100}%`,
+                      backgroundColor: stage.color,
+                    }}
+                  />
+                </span>
+              </div>
+            ))}
           </div>
 
           {/* Accessible Stage Breakdown Summary List */}

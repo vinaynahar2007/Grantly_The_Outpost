@@ -269,6 +269,11 @@ export function DocumentsPage() {
           details in local storage). This is not secure cloud storage, encrypted
           backup, or a substitute for keeping your own copies.
         </p>
+        <p className="mt-2 text-xs leading-relaxed">
+          Verification labels are managed by you. GRANTLY does not check
+          documents with a school or provider; “Verified” means you marked the
+          status, not institutional verification.
+        </p>
       </div>
 
       <section

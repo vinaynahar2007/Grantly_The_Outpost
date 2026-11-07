@@ -80,6 +80,21 @@ describe("GRANTLY Application Foundation", () => {
     expect(document.body.style.overflow).toBe("");
   });
 
+  it("explains browser-local data storage on the profile page", () => {
+    render(
+      <MemoryRouter initialEntries={["/profile"]}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+
+    expect(
+      screen.getByRole("heading", { name: "Browser-local data" })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/not account-backed, cloud-synced, or an encrypted backup/i)
+    ).toBeInTheDocument();
+  });
+
   it("renders reusable Button and Card primitives with accessible interaction", async () => {
     const user = userEvent.setup();
     const handleClick = vi.fn();

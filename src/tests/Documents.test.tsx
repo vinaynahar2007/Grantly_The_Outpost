@@ -34,6 +34,9 @@ describe("Document Vault", () => {
   it("validates and stores uploads in IndexedDB with metadata in localStorage", async () => {
     const user = userEvent.setup();
     const page = renderDocuments();
+    expect(
+      screen.getByText(/Verification labels are managed by you/i),
+    ).toBeInTheDocument();
     await user.click(screen.getByRole("button", { name: "Add document" }));
     const fileInput = screen.getByLabelText(
       "Choose a PDF, JPG, JPEG, or PNG document",

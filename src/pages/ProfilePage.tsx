@@ -5,6 +5,7 @@ import {
   ArrowUpRight,
   CheckCircle2,
   GraduationCap,
+  Info,
   Landmark,
   RotateCcw,
   Save,
@@ -138,7 +139,7 @@ export function ProfilePage() {
     <div ref={containerRef}>
       <PageHeader
         title="Scholar Profile"
-        badgeText="Account"
+        badgeText="Profile"
         description="Everything the Smart Eligibility Matcher knows about you. Blank fields are treated as missing information — GRANTLY never assumes a value."
         actions={
           <>
@@ -482,6 +483,20 @@ export function ProfilePage() {
 
         {/* Live sidebar */}
         <div className="space-y-5 xl:col-span-4">
+          <Card className="border-[#DDD6FE] bg-[#FAF8FF] p-5" role="note">
+            <h2 className="flex items-center gap-2 text-sm font-semibold text-[#0F172A]">
+              <Info className="h-4 w-4 text-[#6D28D9]" aria-hidden="true" />
+              Browser-local data
+            </h2>
+            <p className="mt-2 text-xs leading-relaxed text-[#475569]">
+              Your profile, applications, and calendar reminders are saved in
+              this browser. Document details use browser storage and document
+              files use IndexedDB. This data is not account-backed,
+              cloud-synced, or an encrypted backup; clearing browser data may
+              remove it. Keep independent copies of important documents.
+            </p>
+          </Card>
+
           <Card className="p-5" aria-labelledby="live-match-preview">
             <h2
               id="live-match-preview"

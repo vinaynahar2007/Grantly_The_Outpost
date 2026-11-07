@@ -31,10 +31,13 @@ shell links to the primary modules.
 
 - React 19, TypeScript 5.9, and React Router 7
 - Vite 7 and Tailwind CSS 4
-- Recharts for data visualizations
 - Framer Motion for selected transitions
 - Lucide React for icons
 - Vitest, jsdom, and Testing Library for automated tests
+
+Compact data visualizations use CSS-based bars. The dashboard application
+progress section remains lazy-loaded and deferred until near the viewport; no
+charting library is required.
 
 ## Requirements and setup
 

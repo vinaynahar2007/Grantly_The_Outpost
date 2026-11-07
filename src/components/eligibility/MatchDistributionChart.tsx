@@ -1,13 +1,3 @@
-import {
-  Bar,
-  BarChart,
-  CartesianGrid,
-  Legend,
-  ResponsiveContainer,
-  Tooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
 import type { ScholarshipMatch } from "@/types";
 import { Card } from "@/components/ui";
 import { MATCH_WEIGHTS, summarizeCriteriaByGroup } from "@/services/matchingEngine";
@@ -24,6 +14,12 @@ const SERIES = [
 
 export function MatchDistributionChart({ matches }: MatchDistributionChartProps) {
   const rows = summarizeCriteriaByGroup(matches);
+  const maxCount = Math.max(
+    1,
+    ...rows.map(
+      (row) => row.satisfied + row.needsInformation + row.failed,
+    ),
+  );
 
   return (
     <Card className="min-w-0 p-5 sm:p-6" aria-labelledby="criteria-distribution-heading">
@@ -53,55 +49,29 @@ export function MatchDistributionChart({ matches }: MatchDistributionChartProps)
         </ul>
       </div>
 
-      <div className="mt-4 h-[260px] w-full" aria-hidden="true">
-        <ResponsiveContainer width="100%" height={260} minWidth={220}>
-          <BarChart
-            data={rows}
-            layout="vertical"
-            margin={{ top: 4, right: 16, bottom: 0, left: 8 }}
-            barCategoryGap={10}
-          >
-            <CartesianGrid horizontal={false} stroke="#EEF2F6" />
-            <XAxis
-              type="number"
-              allowDecimals={false}
-              tick={{ fill: "#64748B", fontSize: 11 }}
-              axisLine={{ stroke: "#E2E8F0" }}
-              tickLine={false}
-            />
-            <YAxis
-              type="category"
-              dataKey="label"
-              width={148}
-              tick={{ fill: "#0F172A", fontSize: 11, fontWeight: 500 }}
-              axisLine={false}
-              tickLine={false}
-            />
-            <Tooltip
-              cursor={{ fill: "#F8F9FC" }}
-              contentStyle={{
-                backgroundColor: "#FFFFFF",
-                borderColor: "#E2E8F0",
-                borderRadius: "12px",
-                fontSize: "12px",
-                color: "#0F172A",
-                boxShadow: "0 8px 20px -4px rgb(15 23 42 / 0.08)",
-              }}
-            />
-            <Legend wrapperStyle={{ display: "none" }} />
-            {SERIES.map((series, index) => (
-              <Bar
-                key={series.key}
-                dataKey={series.key}
-                name={series.label}
-                stackId="outcomes"
-                fill={series.color}
-                maxBarSize={20}
-                radius={index === SERIES.length - 1 ? [0, 6, 6, 0] : undefined}
-              />
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
+      <div
+        className="mt-4 flex min-h-[260px] flex-col justify-center gap-2"
+        aria-hidden="true"
+      >
+        {rows.map((row) => (
+          <div key={row.group} className="flex items-center gap-3">
+            <span className="w-32 shrink-0 truncate text-right text-[11px] text-[#64748B] sm:w-36">
+              {row.label}
+            </span>
+            <span className="flex h-4 min-w-0 flex-1 overflow-hidden rounded bg-[#F1F4F9]">
+              {SERIES.map((series) => (
+                <span
+                  key={series.key}
+                  className="h-full"
+                  style={{
+                    width: `${(row[series.key] / maxCount) * 100}%`,
+                    backgroundColor: series.color,
+                  }}
+                />
+              ))}
+            </span>
+          </div>
+        ))}
       </div>
 
       {/* Accessible + scannable data table mirroring the chart */}

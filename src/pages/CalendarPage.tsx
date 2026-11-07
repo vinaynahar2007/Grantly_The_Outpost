@@ -411,7 +411,7 @@ export function CalendarPage() {
       <PageHeader
         title="Deadlines Calendar"
         badgeText="Schedule"
-        description="Keep scholarship cutoffs, application milestones, and personal reminders in one synchronized calendar."
+        description="Keep scholarship cutoffs, application milestones, and personal reminders together in one calendar built from your GRANTLY records."
         actions={
           <Button
             variant="primary"
