@@ -81,8 +81,43 @@ export function validateDocumentFile(file: File): string | null {
   return null;
 }
 
+export async function validateDocumentFileContent(file: File): Promise<string | null> {
+  const validationError = validateDocumentFile(file);
+  if (validationError) return validationError;
+
+  try {
+    const bytes = new Uint8Array(await file.slice(0, 1024).arrayBuffer());
+    const extension = file.name.split(".").at(-1)?.toLowerCase();
+    const isPdf =
+      extension === "pdf" &&
+      Array.from(bytes).some(
+        (_, index) =>
+          index <= bytes.length - 5 &&
+          bytes[index] === 0x25 &&
+          bytes[index + 1] === 0x50 &&
+          bytes[index + 2] === 0x44 &&
+          bytes[index + 3] === 0x46 &&
+          bytes[index + 4] === 0x2d,
+      );
+    const isJpeg =
+      (extension === "jpg" || extension === "jpeg") &&
+      bytes[0] === 0xff &&
+      bytes[1] === 0xd8 &&
+      bytes[2] === 0xff;
+    const pngSignature = [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a];
+    const isPng =
+      extension === "png" &&
+      pngSignature.every((byte, index) => bytes[index] === byte);
+
+    return isPdf || isJpeg || isPng
+      ? null
+      : "The file content does not match its filename. Choose a valid PDF, JPG, JPEG, or PNG file.";
+  } catch {
+    return "The selected file could not be read. Choose another PDF or image.";
+  }
+}
+
 export function getDocumentMimeType(file: File): string {
-  if (file.type) return file.type;
   const extension = file.name.split(".").at(-1)?.toLowerCase();
   return extension ? ACCEPTED_TYPES.get(extension) ?? "" : "";
 }

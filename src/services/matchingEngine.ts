@@ -597,6 +597,8 @@ function scoreCriteria(drafts: CriterionDraft[]): {
   const rawWeights = applicable.map(
     (criterion) => MATCH_WEIGHTS[criterion.group] / (groupCounts.get(criterion.group) ?? 1)
   );
+  // Each group's configured budget is shared among its applicable rules, then
+  // normalized so omitted scholarship criteria never penalize a match.
   const applicableWeight = rawWeights.reduce((sum, weight) => sum + weight, 0);
 
   let earnedRaw = 0;

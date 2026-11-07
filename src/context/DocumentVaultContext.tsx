@@ -17,7 +17,8 @@ import type {
 import {
   DOCUMENT_CATEGORIES,
   getDocumentMimeType,
-  validateDocumentFile,
+  MAX_DOCUMENT_SIZE,
+  validateDocumentFileContent,
 } from "@/utils/documentLogic";
 
 const DOCUMENTS_KEY = "vault_documents";
@@ -47,17 +48,38 @@ const DocumentVaultContext =
 function isVaultDocument(value: unknown): value is VaultDocument {
   if (!value || typeof value !== "object") return false;
   const document = value as Partial<VaultDocument>;
+  const validMimeTypes = new Set([
+    "application/pdf",
+    "image/jpeg",
+    "image/png",
+  ]);
+  const validExpiry =
+    document.expiresAt === null ||
+    (typeof document.expiresAt === "string" &&
+      /^\d{4}-\d{2}-\d{2}$/.test(document.expiresAt) &&
+      Number.isFinite(Date.parse(`${document.expiresAt}T00:00:00Z`)) &&
+      new Date(`${document.expiresAt}T00:00:00Z`)
+        .toISOString()
+        .startsWith(document.expiresAt));
   return (
     typeof document.id === "string" &&
+    document.id.length > 0 &&
     typeof document.name === "string" &&
+    document.name.trim().length > 0 &&
+    document.name.length <= 255 &&
     DOCUMENT_CATEGORIES.some((category) => category.id === document.category) &&
     typeof document.mimeType === "string" &&
+    validMimeTypes.has(document.mimeType) &&
     typeof document.size === "number" &&
+    Number.isSafeInteger(document.size) &&
+    document.size > 0 &&
+    document.size <= MAX_DOCUMENT_SIZE &&
     typeof document.updatedAt === "string" &&
+    Number.isFinite(Date.parse(document.updatedAt)) &&
     ["uploaded", "pending-verification", "verified", "expired"].includes(
       document.status ?? "",
     ) &&
-    (document.expiresAt === null || typeof document.expiresAt === "string") &&
+    validExpiry &&
     Array.isArray(document.associatedApplicationIds) &&
     document.associatedApplicationIds.every(
       (applicationId) => typeof applicationId === "string",
@@ -95,7 +117,7 @@ export function DocumentVaultProvider({
 
   const addDocument = useCallback(
     async (file: File, category: DocumentCategory) => {
-      const validationError = validateDocumentFile(file);
+      const validationError = await validateDocumentFileContent(file);
       if (validationError) throw new Error(validationError);
       const document: VaultDocument = {
         id: createDocumentId(),
@@ -128,7 +150,7 @@ export function DocumentVaultProvider({
 
   const replaceDocument = useCallback(
     async (documentId: string, file: File) => {
-      const validationError = validateDocumentFile(file);
+      const validationError = await validateDocumentFileContent(file);
       if (validationError) throw new Error(validationError);
       const current = documentsRef.current.find(
         (document) => document.id === documentId,

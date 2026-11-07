@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { AppRoutes } from "@/App";
+import { AppRoutes } from "@/tests/testAppRoutes";
 import { createDemoScholarships, DEFAULT_SCHOLAR_PROFILE } from "@/data/scholarships";
 import { calculateEligibility, buildEligibilityMap } from "@/utils/eligibility";
 import {

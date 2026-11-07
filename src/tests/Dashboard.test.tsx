@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { AppRoutes } from "@/App";
+import { AppRoutes } from "@/tests/testAppRoutes";
 import {
   calculateProfileCompletion,
   computeDashboardMetrics,
@@ -119,7 +119,7 @@ describe("GRANTLY Phase 2 — Student Dashboard", () => {
   });
 
   describe("Dashboard UI, Interactions & LocalStorage Persistence", () => {
-    it("renders all required dashboard sections and demonstration data disclosures", () => {
+    it("renders all required dashboard sections and demonstration data disclosures", async () => {
       render(
         <MemoryRouter initialEntries={["/dashboard"]}>
           <AppRoutes />
@@ -154,7 +154,7 @@ describe("GRANTLY Phase 2 — Student Dashboard", () => {
 
       // D. Application Progress
       expect(
-        screen.getByRole("heading", { name: /Application Progress/i }),
+        await screen.findByRole("heading", { name: /Application Progress/i }),
       ).toBeInTheDocument();
       const stageList = screen.getByRole("list", {
         name: /Application stage counts/i,

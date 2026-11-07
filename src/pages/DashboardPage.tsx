@@ -1,3 +1,4 @@
+import { lazy } from "react";
 import {
   Sparkles,
   Wallet,
@@ -10,12 +11,19 @@ import {
   WelcomeSection,
   StatCard,
   RecommendedScholarships,
-  ApplicationProgressChart,
   UpcomingDeadlines,
   RecentActivity,
   ProfileCompletionCard,
 } from "@/components/dashboard";
+import { DeferredContent } from "@/components/ui/DeferredContent";
+import { Card } from "@/components/ui";
 import { formatINR } from "@/utils/dashboardLogic";
+
+const ApplicationProgressChart = lazy(() =>
+  import("@/components/dashboard/ApplicationProgressChart").then((module) => ({
+    default: module.ApplicationProgressChart,
+  })),
+);
 
 function formatTwoDigitCount(count: number): string {
   return String(count).padStart(2, "0");
@@ -98,10 +106,24 @@ export function DashboardPage() {
             onToggleSave={toggleSaveScholarship}
           />
 
-          <ApplicationProgressChart
-            stages={applicationProgress}
-            totalApplications={applications.length}
-          />
+          <DeferredContent
+            fallback={
+              <Card
+                className="min-h-[410px] p-5 sm:p-6"
+                role="status"
+                aria-label="Loading application progress chart"
+              >
+                <div className="h-6 w-48 animate-pulse rounded bg-[#F1F4F9]" />
+                <div className="mt-4 h-4 max-w-xl animate-pulse rounded bg-[#F1F4F9]" />
+                <div className="mt-8 h-[300px] animate-pulse rounded-xl bg-[#F8F9FC]" />
+              </Card>
+            }
+          >
+            <ApplicationProgressChart
+              stages={applicationProgress}
+              totalApplications={applications.length}
+            />
+          </DeferredContent>
         </div>
 
         {/* Secondary Column: Profile Completion, Upcoming Deadlines & Recent Activity */}

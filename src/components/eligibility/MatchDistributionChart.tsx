@@ -26,7 +26,7 @@ export function MatchDistributionChart({ matches }: MatchDistributionChartProps)
   const rows = summarizeCriteriaByGroup(matches);
 
   return (
-    <Card className="p-5 sm:p-6" aria-labelledby="criteria-distribution-heading">
+    <Card className="min-w-0 p-5 sm:p-6" aria-labelledby="criteria-distribution-heading">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h2

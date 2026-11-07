@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { AppRoutes } from "@/App";
+import { AppRoutes } from "@/tests/testAppRoutes";
 import { Button, Card, CardHeader, CardTitle, CardContent } from "@/components/ui";
 
 describe("GRANTLY Application Foundation", () => {
@@ -52,6 +52,32 @@ describe("GRANTLY Application Foundation", () => {
       ).toBeInTheDocument();
       expect(link).toHaveAttribute("aria-current", "page");
     }
+  });
+
+  it("opens the mobile drawer with focus and restores focus when dismissed with Escape", async () => {
+    const user = userEvent.setup();
+    render(
+      <MemoryRouter initialEntries={["/dashboard"]}>
+        <AppRoutes />
+      </MemoryRouter>
+    );
+
+    const openButton = screen.getByRole("button", {
+      name: "Open navigation menu",
+    });
+    await user.click(openButton);
+    const drawer = screen.getByRole("dialog", { name: "Navigation Drawer" });
+    expect(drawer).toBeInTheDocument();
+    expect(document.activeElement).toHaveAttribute(
+      "aria-label",
+      "Close navigation menu",
+    );
+    expect(document.body.style.overflow).toBe("hidden");
+
+    await user.keyboard("{Escape}");
+    expect(screen.queryByRole("dialog", { name: "Navigation Drawer" })).not.toBeInTheDocument();
+    expect(document.activeElement).toBe(openButton);
+    expect(document.body.style.overflow).toBe("");
   });
 
   it("renders reusable Button and Card primitives with accessible interaction", async () => {

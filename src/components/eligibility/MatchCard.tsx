@@ -88,13 +88,14 @@ export function MatchCard({
 
   return (
     <motion.div
+      className="min-w-0"
       initial={reduceMotion ? false : { opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.28, delay: reduceMotion ? 0 : Math.min(index * 0.035, 0.28) }}
     >
       <Card
         interactive
-        className="flex h-full flex-col p-5"
+        className="flex h-full min-w-0 flex-col p-5"
         style={{ borderLeft: `3px solid ${token.color}` }}
       >
         <div className="flex items-start gap-4">
@@ -175,7 +176,7 @@ export function MatchCard({
         <p className="mt-3 text-xs leading-relaxed text-[#475569]">{match.explanation}</p>
 
         {/* Criteria summary */}
-        <div className="mt-4 grid grid-cols-3 gap-3 border-t border-[#EEF2F6] pt-3">
+        <div className="mt-4 grid min-w-0 grid-cols-[repeat(3,minmax(0,1fr))] gap-3 border-t border-[#EEF2F6] pt-3">
           <CriterionChips
             label="Met"
             items={match.matched.map((c) => c.label)}

@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { X, Sparkles } from "lucide-react";
 import { NAVIGATION_ITEMS, NAV_SECTIONS } from "@/data/navigation";
@@ -15,6 +15,7 @@ const SECTION_ORDER: NavSection[] = ["overview", "workspace", "account"];
 
 export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   const location = useLocation();
+  const mobileDrawerRef = useRef<HTMLDivElement>(null);
 
   // Close mobile drawer automatically on route navigation
   useEffect(() => {
@@ -25,14 +26,50 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
   useEffect(() => {
     if (!isMobileOpen) return;
 
+    const previousFocus = document.activeElement as HTMLElement | null;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    mobileDrawerRef.current
+      ?.querySelector<HTMLElement>('[aria-label="Close navigation menu"]')
+      ?.focus();
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
+        event.preventDefault();
         onCloseMobile();
+        return;
+      }
+      if (event.key !== "Tab") return;
+
+      const focusable = Array.from(
+        mobileDrawerRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])',
+        ) ?? [],
+      ).filter((element) => !element.closest("[hidden]"));
+      const first = focusable[0];
+      const last = focusable.at(-1);
+      if (!first || !last) {
+        event.preventDefault();
+        mobileDrawerRef.current?.focus();
+        return;
+      }
+
+      const activeIndex = focusable.indexOf(document.activeElement as HTMLElement);
+      if (event.shiftKey && activeIndex <= 0) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && activeIndex === focusable.length - 1) {
+        event.preventDefault();
+        first.focus();
       }
     };
 
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = previousOverflow;
+      if (previousFocus?.isConnected) previousFocus.focus();
+    };
   }, [isMobileOpen, onCloseMobile]);
 
   const sidebarContent = (
@@ -132,7 +169,7 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
             </span>
           </div>
           <p className="mt-2 text-xs leading-relaxed text-[#475569]">
-            Foundation shell initialized. Modules ready for feature integration.
+            Your planning workspace is ready. Changes stay in this browser.
           </p>
         </div>
       </div>
@@ -159,7 +196,9 @@ export function Sidebar({ isMobileOpen, onCloseMobile }: SidebarProps) {
             onClick={onCloseMobile}
             aria-hidden="true"
           />
-          <div className="relative flex h-full w-[280px] max-w-[85vw] flex-col shadow-[0_20px_40px_-12px_rgb(15_23_42_/_0.18)]">
+          <div           ref={mobileDrawerRef}
+          className="relative flex h-full w-[280px] max-w-[85vw] flex-col shadow-[0_20px_40px_-12px_rgb(15_23_42_/_0.18)]"
+          tabIndex={-1}>
             {sidebarContent}
           </div>
         </div>

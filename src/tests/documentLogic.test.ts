@@ -5,6 +5,7 @@ import {
   getApplicationDocumentReadiness,
   MAX_DOCUMENT_SIZE,
   validateDocumentFile,
+  validateDocumentFileContent,
 } from "@/utils/documentLogic";
 import type { VaultDocument } from "@/types";
 import { createDemoScholarships } from "@/data/scholarships";
@@ -54,6 +55,35 @@ describe("Document vault logic", () => {
         }),
       ),
     ).toContain("10 MB");
+  });
+
+  it("checks file signatures instead of trusting an allowed extension and MIME type", async () => {
+    expect(
+      await validateDocumentFileContent(
+        new File(["%PDF-1.7\nbody"], "valid.pdf", { type: "application/pdf" }),
+      ),
+    ).toBeNull();
+    expect(
+      await validateDocumentFileContent(
+        new File([new Uint8Array([0xff, 0xd8, 0xff, 0xd9])], "valid.jpg", {
+          type: "image/jpeg",
+        }),
+      ),
+    ).toBeNull();
+    expect(
+      await validateDocumentFileContent(
+        new File(
+          [new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])],
+          "valid.png",
+          { type: "image/png" },
+        ),
+      ),
+    ).toBeNull();
+    await expect(
+      validateDocumentFileContent(
+        new File(["not a PDF"], "spoofed.pdf", { type: "application/pdf" }),
+      ),
+    ).resolves.toContain("content does not match");
   });
 
   it("calculates category completion and verification counts from current records", () => {

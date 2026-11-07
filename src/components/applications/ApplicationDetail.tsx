@@ -29,6 +29,7 @@ import {
   effectiveDocumentStatus,
   getApplicationDocumentReadiness,
 } from "@/utils/documentLogic";
+import { getSafeExternalUrl } from "@/utils/externalUrl";
 import { StatusSelect } from "./ApplicationStatus";
 import { ApplicationDeadline } from "./ApplicationDeadline";
 import { ScholarshipMonogram } from "./ApplicationList";
@@ -95,10 +96,7 @@ export function ApplicationDetail({
         "Your changes could not be saved. Check the notification for details.",
       );
   };
-  const officialUrl =
-    scholarship.officialUrl && /^https:\/\//.test(scholarship.officialUrl)
-      ? scholarship.officialUrl
-      : null;
+  const officialUrl = getSafeExternalUrl(scholarship.officialUrl);
 
   return (
     <Dialog

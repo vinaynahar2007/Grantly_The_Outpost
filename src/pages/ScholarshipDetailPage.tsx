@@ -33,6 +33,7 @@ import { DashboardEmptyState } from "@/components/dashboard";
 import { cn } from "@/utils/cn";
 import { APPLICATION_STATUSES } from "@/data/applicationStatuses";
 import { findActiveApplication } from "@/utils/applicationLogic";
+import { getSafeExternalUrl } from "@/utils/externalUrl";
 
 const eligibilityStyles = {
   Eligible: "border-[#A7F3D0] bg-[#ECFDF5] text-[#047857]",
@@ -111,6 +112,7 @@ export function ScholarshipDetailPage() {
     findActiveApplication(applications, scholarship.id) ??
     applications.find((app) => app.scholarshipId === scholarship.id);
   const deadlineInfo = evaluateDeadline(scholarship.deadline);
+  const officialUrl = getSafeExternalUrl(scholarship.officialUrl);
   const eligibility = eligibilityById.get(scholarship.id);
   const badges = getScholarshipBadges(scholarship, eligibility);
 
@@ -570,13 +572,13 @@ export function ScholarshipDetailPage() {
         </SectionCard>
 
         <SectionCard title="Official Application Link" icon={Landmark}>
-          {scholarship.officialUrl ? (
+          {officialUrl ? (
             <div>
               <p className="text-sm text-[#475569]">
                 Apply through the provider's verified official portal:
               </p>
               <a
-                href={scholarship.officialUrl}
+                href={officialUrl}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="mt-3 inline-flex h-10 items-center rounded-[10px] bg-[#6D28D9] px-4 text-sm font-medium text-white hover:bg-[#5B21B6]"

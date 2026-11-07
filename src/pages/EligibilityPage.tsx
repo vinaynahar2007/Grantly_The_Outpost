@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { lazy, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Activity,
@@ -25,10 +25,10 @@ import {
   MATCH_CATEGORY_TOKENS,
   MatchCard,
   MatchDetailDrawer,
-  MatchDistributionChart,
   MatchingSummaryHero,
   MatchStatTile,
 } from "@/components/eligibility";
+import { DeferredContent } from "@/components/ui/DeferredContent";
 import { DashboardEmptyState } from "@/components/dashboard";
 import {
   CRITERION_GROUP_LABELS,
@@ -38,6 +38,12 @@ import {
 import type { CriterionGroup, MatchFilter, MatchSortOption } from "@/types";
 import { getScholarFirstName } from "@/utils/dashboardLogic";
 import { cn } from "@/utils/cn";
+
+const MatchDistributionChart = lazy(() =>
+  import("@/components/eligibility/MatchDistributionChart").then((module) => ({
+    default: module.MatchDistributionChart,
+  })),
+);
 
 const SORT_LABELS: Array<{ value: MatchSortOption; label: string }> = [
   { value: "score-desc", label: "Highest match percentage" },
@@ -246,11 +252,25 @@ export function EligibilityPage() {
       </section>
 
       {/* Transparency row */}
-      <div className="grid gap-6 xl:grid-cols-12">
-        <div className="xl:col-span-7">
-          <MatchDistributionChart matches={matches} />
+      <div className="grid min-w-0 gap-6 xl:grid-cols-12">
+        <div className="min-w-0 xl:col-span-7">
+          <DeferredContent
+            fallback={
+              <Card
+                className="min-h-[620px] p-5 sm:p-6"
+                role="status"
+                aria-label="Loading criteria distribution chart"
+              >
+                <div className="h-6 w-48 animate-pulse rounded bg-[#F1F4F9]" />
+                <div className="mt-4 h-[260px] animate-pulse rounded-xl bg-[#F8F9FC]" />
+                <div className="mt-4 h-48 animate-pulse rounded-xl bg-[#F8F9FC]" />
+              </Card>
+            }
+          >
+            <MatchDistributionChart matches={matches} />
+          </DeferredContent>
         </div>
-        <div className="xl:col-span-5">
+        <div className="min-w-0 xl:col-span-5">
           <ScoringRulesPanel />
         </div>
       </div>
@@ -416,9 +436,9 @@ export function EligibilityPage() {
             }
           />
         ) : (
-          <ul className="grid gap-4 md:grid-cols-2 2xl:grid-cols-3">
+          <ul className="grid min-w-0 gap-4 md:grid-cols-2 2xl:grid-cols-3">
             {visibleMatches.map((match, index) => (
-              <li key={match.scholarshipId}>
+              <li key={match.scholarshipId} className="min-w-0">
                 <MatchCard
                   match={match}
                   index={index}

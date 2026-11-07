@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { render, screen, waitForElementToBeRemoved, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { AppRoutes } from "@/App";
+import { AppRoutes } from "@/tests/testAppRoutes";
 import { createDemoScholarships, DEFAULT_SCHOLAR_PROFILE } from "@/data/scholarships";
 import {
   MATCH_WEIGHTS,
@@ -306,7 +306,7 @@ describe("GRANTLY Phase 4 — Smart Eligibility Matcher", () => {
       expect(within(overview).getByText(/Profile completeness/i)).toBeInTheDocument();
 
       expect(screen.getByRole("heading", { name: /Improve Your Match/i })).toBeInTheDocument();
-      expect(screen.getByRole("heading", { name: /How the scoring works/i })).toBeInTheDocument();
+      expect(await screen.findByRole("heading", { name: /How the scoring works/i })).toBeInTheDocument();
       expect(screen.getAllByRole("heading", { level: 3 })).toHaveLength(12);
     });
 

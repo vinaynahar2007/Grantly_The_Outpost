@@ -8,7 +8,7 @@ import {
 } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { AppRoutes } from "@/App";
+import { AppRoutes } from "@/tests/testAppRoutes";
 import { createDemoApplications } from "@/data/scholarships";
 import type { ScholarshipApplication } from "@/types";
 import {
@@ -324,7 +324,7 @@ describe("Application tracker workflows", () => {
       within(navigation).getByRole("link", { name: "Dashboard" }),
     );
     expect(screen.getByText("03 active")).toBeInTheDocument();
-    const counts = screen.getByRole("list", {
+    const counts = await screen.findByRole("list", {
       name: "Application stage counts",
     });
     expect(within(counts).getByText("Withdrawn")).toBeInTheDocument();

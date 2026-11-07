@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router-dom";
-import { AppRoutes } from "@/App";
+import { AppRoutes } from "@/tests/testAppRoutes";
 import { documentStorage } from "@/services/documentStorage";
 
 const METADATA_KEY = "grantly_v1_vault_documents";
@@ -20,7 +20,7 @@ function renderDocuments() {
 }
 
 function pdfFile(name = "semester-transcript.pdf", bytes = "document") {
-  return new File([bytes], name, { type: "application/pdf" });
+  return new File([`%PDF-1.7\n${bytes}`], name, { type: "application/pdf" });
 }
 
 describe("Document Vault", () => {
@@ -162,5 +162,52 @@ describe("Document Vault", () => {
     );
     expect(localStorage.getItem(METADATA_KEY)).toBeNull();
     expect(screen.queryByText("Document uploaded")).not.toBeInTheDocument();
+  });
+
+  it("rejects content that only claims an allowed extension and MIME type", async () => {
+    const user = userEvent.setup();
+    renderDocuments();
+    await user.click(screen.getByRole("button", { name: "Add document" }));
+    fireEvent.change(
+      screen.getByLabelText("Choose a PDF, JPG, JPEG, or PNG document"),
+      {
+        target: {
+          files: [new File(["not a PDF"], "spoofed.pdf", { type: "application/pdf" })],
+        },
+      },
+    );
+
+    await user.click(screen.getByRole("button", { name: "Upload document" }));
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "content does not match",
+    );
+    expect(documentStorage.put).not.toHaveBeenCalled();
+    expect(localStorage.getItem(METADATA_KEY)).toBeNull();
+    expect(screen.queryByText("Document uploaded")).not.toBeInTheDocument();
+  });
+
+  it("ignores malformed persisted document metadata without breaking the vault", () => {
+    localStorage.setItem(
+      METADATA_KEY,
+      JSON.stringify([
+        {
+          id: "invalid",
+          name: "spoofed.pdf",
+          category: "transcript",
+          mimeType: "application/pdf",
+          size: Number.POSITIVE_INFINITY,
+          updatedAt: "not-a-date",
+          status: "uploaded",
+          expiresAt: null,
+          associatedApplicationIds: [],
+        },
+      ]),
+    );
+
+    renderDocuments();
+
+    expect(screen.getByRole("heading", { name: "Document Vault" })).toBeInTheDocument();
+    expect(screen.queryByText("spoofed.pdf")).not.toBeInTheDocument();
   });
 });
